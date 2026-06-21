@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flare External - Client Portal</title>
+    <!-- Secure content network delivery for KeyAuth's Web API library -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body {
+            background-color: #0a0b0d;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .login-box {
+            background-color: #14161d;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444; /* Vibe matching a 'Flare' red theme */
+            width: 320px;
+            text-align: center;
+        }
+        h2 { 
+            color: #ef4444; 
+            margin-top: 0;
+            margin-bottom: 24px; 
+            font-size: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #0a0b0d;
+            border: 1px solid #3f4451;
+            border-radius: 6px;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        input:focus { border-color: #ef4444; outline: none; box-shadow: 0 0 5px rgba(239, 68, 68, 0.5); }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 16px;
+            letter-spacing: 0.5px;
+        }
+        button:hover { background-color: #dc2626; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
+        .register-link {
+            background-color: transparent; 
+            color: #ef4444; 
+            border: 1px solid #ef4444; 
+            margin-top: 10px;
+        }
+        .register-link:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        .status { margin-top: 20px; font-size: 13px; color: #ff6b6b; font-weight: 500; min-height: 18px; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <h2>Flare External</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <input type="text" id="license" placeholder="License Key (To Register)">
+        <button id="loginBtn" onclick="processAuth('login')">Log In</button>
+        <button id="regBtn" class="register-link" onclick="processAuth('register')">Register Account</button>
+        <div class="status" id="statusBox">Connecting to secure API...</div>
+    </div>
+
+    <script>
+        // ⚠️ EDIT THESE PLACES WITH DATA FROM YOUR PRIVATE KEYAUTH DASHBOARD
+        const KeyAuthApp = new KeyAuth(
+            "YOUR_APPLICATION_NAME", 
+            "YOUR_OWNER_ID", 
+            "YOUR_APPLICATION_SECRET", 
+            "1.0" 
+        );
+
+        const FILE_ID = "YOUR_KEYAUTH_FILE_ID"; 
+
+        // Establish background connection immediately
+        window.onload = function() {
+            KeyAuthApp.init().then(() => {
+                document.getElementById('statusBox').style.color = "#10b981"; // Emerald green
+                document.getElementById('statusBox').innerText = "System online. Secure gateway ready.";
+            }).catch(err => {
+                document.getElementById('statusBox').style.color = "#ef4444";
+                document.getElementById('statusBox').innerText = "Gateway offline. Verify App configuration.";
+            });
+        };
+
+        function processAuth(type) {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const key = document.getElementById('license').value.trim();
+            const status = document.getElementById('statusBox');
+
+            if (!user || !pass) {
+                status.style.color = "#ef4444";
+                status.innerText = "Username and password are required.";
+                return;
+            }
+
+            status.style.color = "#3b82f6"; // Blue loading text
+            status.innerText = "Processing secure token...";
+
+            if (type === 'login') {
+                KeyAuthApp.login(user, pass).then(() => {
+                    status.style.color = "#10b981";
+                    status.innerText = "Access granted! Streaming client file...";
+                    triggerSecureDownload();
+                }).catch(err => {
+                    status.style.color = "#ef4444";
+                    status.innerText = "Auth Rejected: " + err;
+                });
+            } else if (type === 'register') {
+                if (!key) {
+                    status.style.color = "#ef4444";
+                    status.innerText = "A valid license key is required to register.";
+                    return;
+                }
+                KeyAuthApp.register(user, pass, key).then(() => {
+                    status.style.color = "#10b981";
+                    status.innerText = "Registration complete! Fetching payload...";
+                    triggerSecureDownload();
+                }).catch(err => {
+                    status.style.color = "#ef4444";
+                    status.innerText = "Registration Denied: " + err;
+                });
+            }
+        }
+
+        function triggerSecureDownload() {
+            KeyAuthApp.download(FILE_ID).then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "Loader.exe"; // Saves to their machine as Loader.exe
+                document.body.appendChild(a);
+                a.click();
+                
+                // Instantly scrub the trace blob data from active browser memory
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            }).catch(err => {
+                document.getElementById('statusBox').style.color = "#ef4444";
+                document.getElementById('statusBox').innerText = "Payload dispatch failed: " + err;
+            });
+        }
+    </script>
+</body>
+</html>
