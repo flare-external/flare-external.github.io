@@ -1,154 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Client Portal</title>
-    <!-- We load Supabase's official browser library for safe user handling -->
-    <script src="https://jsdelivr.net"></script>
-    <style>
-        body {
-            background-color: #0a0b0d;
-            color: #e2e8f0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .login-box {
-            background-color: #14161d;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
-            border: 1px solid #ef4444; /* Premium red accent line */
-            width: 320px;
-            text-align: center;
-        }
-        h2 { 
-            color: #ef4444; 
-            margin-top: 0;
-            margin-bottom: 24px; 
-            font-size: 24px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: #0a0b0d;
-            border: 1px solid #3f4451;
-            border-radius: 6px;
-            color: #fff;
-            box-sizing: border-box;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        input:focus { border-color: #ef4444; outline: none; box-shadow: 0 0 5px rgba(239, 68, 68, 0.5); }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #ef4444;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 16px;
-            letter-spacing: 0.5px;
-        }
-        button:hover { background-color: #dc2626; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
-        .register-link {
-            background-color: transparent; 
-            color: #ef4444; 
-            border: 1px solid #ef4444; 
-            margin-top: 10px;
-        }
-        .register-link:hover {
-            background-color: rgba(239, 68, 68, 0.1);
-        }
-        .status { margin-top: 20px; font-size: 13px; color: #ff6b6b; font-weight: 500; min-height: 18px; }
-    </style>
+<meta charset="UTF-8">
+<title>Flare — Download</title>
+<style>
+  :root{
+    --bg:#0a0a0c;
+    --panel:#141318;
+    --panel-2:#1b1a20;
+    --line:#2a2832;
+    --text:#f1edf5;
+    --muted:#8e8a99;
+    --pink:#ff3d7f;
+    --gold:#e8c07d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% 0%, #2a1018 0%, transparent 60%),
+      radial-gradient(ellipse 700px 500px at 85% 10%, #14101c 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    min-height:100vh;
+  }
+  .wrap{
+    max-width:1400px;
+    margin:0 auto;
+    padding:24px 32px;
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:14px 24px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand-mark{
+    width:30px;height:30px;
+    border-radius:8px;
+    background:linear-gradient(155deg,var(--pink),#7a1438);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    font-size:14px;
+  }
+  .brand-name{
+    font-weight:800;
+    font-size:17px;
+    letter-spacing:.04em;
+  }
+  .nav-links{
+    display:flex;
+    gap:32px;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.06em;
+    color:var(--muted);
+  }
+  .nav-links a{
+    color:inherit;
+    text-decoration:none;
+    padding-bottom:14px;
+    cursor:pointer;
+  }
+  .nav-links a.active{
+    color:var(--text);
+    border-bottom:2px solid var(--pink);
+  }
+  .nav-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .user-info{
+    text-align:right;
+    line-height:1.3;
+  }
+  .uname{ font-size:12.5px; font-weight:700; }
+  .ubalance{ font-size:11px; color:var(--gold); font-weight:700; }
+  .avatar{
+    width:32px;height:32px;
+    border-radius:50%;
+    background:linear-gradient(155deg,#3ddc84,#1a6b42);
+  }
+  .logout{
+    background:#fff;
+    color:#111;
+    border:none;
+    border-radius:999px;
+    padding:9px 18px;
+    font-size:11.5px;
+    font-weight:800;
+    letter-spacing:.04em;
+    cursor:pointer;
+  }
+
+  .hero{
+    text-align:center;
+    padding:160px 20px 60px 20px;
+  }
+  .hero h1{
+    font-size:160px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    margin:0;
+    line-height:0.9;
+    background:linear-gradient(180deg,#ffffff 30%,#8b8893 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p{
+    color:var(--muted);
+    font-size:19px;
+    margin:28px 0 36px 0;
+  }
+  .cta-row{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    margin-bottom:32px;
+  }
+  .btn{
+    border-radius:999px;
+    padding:16px 32px;
+    font-size:12.5px;
+    font-weight:800;
+    letter-spacing:.06em;
+    cursor:pointer;
+    border:1px solid var(--line);
+  }
+  .btn-primary{
+    background:#fff;
+    color:#111;
+    border:none;
+  }
+  .btn-secondary{
+    background:transparent;
+    color:var(--text);
+  }
+  .discord-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:9px 16px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .discord-pill b{ color:var(--text); }
+  .discord-dot{
+    width:16px;height:16px;
+    border-radius:4px;
+    background:#5865f2;
+  }
+
+  @media (max-width:900px){
+    .hero h1{ font-size:80px; }
+    .nav-links{ display:none; }
+  }
+</style>
 </head>
 <body>
 
-    <div class="login-box">
-        <h2>Portal Login</h2>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password">
-        <button id="loginBtn" onclick="handleAuth('login')">Log In</button>
-        <button id="regBtn" class="register-link" onclick="handleAuth('register')">Create Account</button>
-        <div class="status" id="statusBox">Initializing secure connection...</div>
+<div class="wrap">
+  <nav>
+    <div class="brand">
+      <div class="brand-mark">F</div>
+      <div class="brand-name">FLARE</div>
     </div>
+    <div class="nav-links">
+      <a class="active">HOME</a>
+      <a>LIBRARY</a>
+      <a>STORE</a>
+    </div>
+    <div class="nav-right">
+      <div class="user-info">
+        <div class="uname">adrian</div>
+        <div class="ubalance">Balance: 0.0</div>
+      </div>
+      <div class="avatar"></div>
+      <button class="logout">LOGOUT</button>
+    </div>
+  </nav>
 
-    <script>
-        // ⚠️ Replace these later with your free credentials from your Supabase dashboard
-        const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-        
-        let supabase = null;
+  <div class="hero">
+    <h1>FLARE</h1>
+    <p>One launcher for your whole library.</p>
+    <div class="cta-row">
+      <button class="btn btn-primary">DOWNLOAD NOW</button>
+      <button class="btn btn-secondary">VIEW LIBRARY</button>
+    </div>
+    <div class="discord-pill">
+      <span class="discord-dot"></span>
+      <b>2,979</b>&nbsp;DISCORD MEMBERS
+    </div>
+  </div>
+</div>
 
-        // Initialize Supabase safely
-        try {
-            if (SUPABASE_URL !== "YOUR_SUPABASE_PROJECT_URL") {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                document.getElementById('statusBox').style.color = "#10b981";
-                document.getElementById('statusBox').innerText = "Security gateway active.";
-            } else {
-                document.getElementById('statusBox').innerText = "Configuration required.";
-            }
-        } catch (e) {
-            document.getElementById('statusBox').innerText = "Initialization failed.";
-        }
-
-        async function handleAuth(type) {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const status = document.getElementById('statusBox');
-
-            if (!supabase) {
-                status.style.color = "#ef4444";
-                status.innerText = "Please connect your database credentials first.";
-                return;
-            }
-
-            if (!email || !password) {
-                status.style.color = "#ef4444";
-                status.innerText = "All fields are required.";
-                return;
-            }
-
-            status.style.color = "#3b82f6";
-            status.innerText = "Authenticating...";
-
-            if (type === 'login') {
-                // Securely sign in user
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) {
-                    status.style.color = "#ef4444";
-                    status.innerText = "Login failed: " + error.message;
-                } else {
-                    status.style.color = "#10b981";
-                    status.innerText = "Welcome back! Redirecting...";
-                    // You can redirect them to a dashboard page here
-                }
-            } else if (type === 'register') {
-                // Securely sign up new user
-                const { data, error } = await supabase.auth.signUp({ email, password });
-                if (error) {
-                    status.style.color = "#ef4444";
-                    status.innerText = "Sign up failed: " + error.message;
-                } else {
-                    status.style.color = "#10b981";
-                    status.innerText = "Account created! Check your email for confirmation.";
-                }
-            }
-        }
-    </script>
 </body>
 </html>
