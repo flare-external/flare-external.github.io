@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flare External - Client Portal</title>
-    <!-- Secure content network delivery for KeyAuth's Web API library -->
+    <title>Secure Client Portal</title>
+    <!-- We load Supabase's official browser library for safe user handling -->
     <script src="https://jsdelivr.net"></script>
     <style>
         body {
@@ -23,7 +23,7 @@
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
-            border: 1px solid #ef4444; /* Vibe matching a 'Flare' red theme */
+            border: 1px solid #ef4444; /* Premium red accent line */
             width: 320px;
             text-align: center;
         }
@@ -78,94 +78,76 @@
 <body>
 
     <div class="login-box">
-        <h2>Flare External</h2>
-        <input type="text" id="username" placeholder="Username">
+        <h2>Portal Login</h2>
+        <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password">
-        <input type="text" id="license" placeholder="License Key (To Register)">
-        <button id="loginBtn" onclick="processAuth('login')">Log In</button>
-        <button id="regBtn" class="register-link" onclick="processAuth('register')">Register Account</button>
-        <div class="status" id="statusBox">Connecting to secure API...</div>
+        <button id="loginBtn" onclick="handleAuth('login')">Log In</button>
+        <button id="regBtn" class="register-link" onclick="handleAuth('register')">Create Account</button>
+        <div class="status" id="statusBox">Initializing secure connection...</div>
     </div>
 
     <script>
-        // ⚠️ EDIT THESE PLACES WITH DATA FROM YOUR PRIVATE KEYAUTH DASHBOARD
-        const KeyAuthApp = new KeyAuth(
-            "YOUR_APPLICATION_NAME", 
-            "YOUR_OWNER_ID", 
-            "YOUR_APPLICATION_SECRET", 
-            "1.0" 
-        );
+        // ⚠️ Replace these later with your free credentials from your Supabase dashboard
+        const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+        
+        let supabase = null;
 
-        const FILE_ID = "YOUR_KEYAUTH_FILE_ID"; 
+        // Initialize Supabase safely
+        try {
+            if (SUPABASE_URL !== "YOUR_SUPABASE_PROJECT_URL") {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                document.getElementById('statusBox').style.color = "#10b981";
+                document.getElementById('statusBox').innerText = "Security gateway active.";
+            } else {
+                document.getElementById('statusBox').innerText = "Configuration required.";
+            }
+        } catch (e) {
+            document.getElementById('statusBox').innerText = "Initialization failed.";
+        }
 
-        // Establish background connection immediately
-        window.onload = function() {
-            KeyAuthApp.init().then(() => {
-                document.getElementById('statusBox').style.color = "#10b981"; // Emerald green
-                document.getElementById('statusBox').innerText = "System online. Secure gateway ready.";
-            }).catch(err => {
-                document.getElementById('statusBox').style.color = "#ef4444";
-                document.getElementById('statusBox').innerText = "Gateway offline. Verify App configuration.";
-            });
-        };
-
-        function processAuth(type) {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-            const key = document.getElementById('license').value.trim();
+        async function handleAuth(type) {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
             const status = document.getElementById('statusBox');
 
-            if (!user || !pass) {
+            if (!supabase) {
                 status.style.color = "#ef4444";
-                status.innerText = "Username and password are required.";
+                status.innerText = "Please connect your database credentials first.";
                 return;
             }
 
-            status.style.color = "#3b82f6"; // Blue loading text
-            status.innerText = "Processing secure token...";
+            if (!email || !password) {
+                status.style.color = "#ef4444";
+                status.innerText = "All fields are required.";
+                return;
+            }
+
+            status.style.color = "#3b82f6";
+            status.innerText = "Authenticating...";
 
             if (type === 'login') {
-                KeyAuthApp.login(user, pass).then(() => {
+                // Securely sign in user
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) {
+                    status.style.color = "#ef4444";
+                    status.innerText = "Login failed: " + error.message;
+                } else {
                     status.style.color = "#10b981";
-                    status.innerText = "Access granted! Streaming client file...";
-                    triggerSecureDownload();
-                }).catch(err => {
-                    status.style.color = "#ef4444";
-                    status.innerText = "Auth Rejected: " + err;
-                });
-            } else if (type === 'register') {
-                if (!key) {
-                    status.style.color = "#ef4444";
-                    status.innerText = "A valid license key is required to register.";
-                    return;
+                    status.innerText = "Welcome back! Redirecting...";
+                    // You can redirect them to a dashboard page here
                 }
-                KeyAuthApp.register(user, pass, key).then(() => {
-                    status.style.color = "#10b981";
-                    status.innerText = "Registration complete! Fetching payload...";
-                    triggerSecureDownload();
-                }).catch(err => {
+            } else if (type === 'register') {
+                // Securely sign up new user
+                const { data, error } = await supabase.auth.signUp({ email, password });
+                if (error) {
                     status.style.color = "#ef4444";
-                    status.innerText = "Registration Denied: " + err;
-                });
+                    status.innerText = "Sign up failed: " + error.message;
+                } else {
+                    status.style.color = "#10b981";
+                    status.innerText = "Account created! Check your email for confirmation.";
+                }
             }
-        }
-
-        function triggerSecureDownload() {
-            KeyAuthApp.download(FILE_ID).then((blob) => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = "Loader.exe"; // Saves to their machine as Loader.exe
-                document.body.appendChild(a);
-                a.click();
-                
-                // Instantly scrub the trace blob data from active browser memory
-                window.URL.revokeObjectURL(url);
-                a.remove();
-            }).catch(err => {
-                document.getElementById('statusBox').style.color = "#ef4444";
-                document.getElementById('statusBox').innerText = "Payload dispatch failed: " + err;
-            });
         }
     </script>
 </body>
