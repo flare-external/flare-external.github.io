@@ -236,7 +236,7 @@ async function initSession() {
 // Populate Dashboard details
 function setupDashboardUI() {
   authCardContainer.style.display = 'none';
-  dashboardContainer.style.display = 'block';
+  dashboardContainer.style.display = 'flex';
   mainNav.style.display = 'flex';
   userWidget.style.display = 'flex';
 

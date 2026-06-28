@@ -260,7 +260,7 @@ body {
   padding: 40px 24px;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 /* ── CARDS ── */
