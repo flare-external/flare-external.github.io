@@ -13,7 +13,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.6">
+  <link rel="stylesheet" href="style.css?v=2.7">
 </head>
 <body>
 
@@ -36,6 +36,7 @@
       <nav class="nav" id="mainNav" style="display: none;">
         <button class="nav-tab active" data-tab="home">HOME</button>
         <button class="nav-tab" data-tab="subscriptions">STORE</button>
+        <button class="nav-tab" data-tab="status">STATUS</button>
       </nav>
 
       <!-- Logout / User Widget (Only visible when logged in) -->
@@ -265,6 +266,18 @@
             </div>
           </div>
 
+        </div>
+      </section>
+
+      <!-- Tab 4: Status (New) -->
+      <section class="tab-panel" id="panel-status">
+        <div class="status-layout">
+          <h3 class="section-title">System Status</h3>
+          <p class="section-subtitle">Real-time status of all Flare tools, cheat injectors, and auth services.</p>
+          
+          <div class="status-grid" id="statusGrid">
+            <!-- Dynamic Status Cards will render here -->
+          </div>
         </div>
       </section>
 

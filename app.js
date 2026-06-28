@@ -72,6 +72,10 @@ navTabs.forEach(tab => {
         panel.classList.remove('active');
       }
     });
+
+    if (targetTab === 'status') {
+      updateSystemStatus();
+    }
   });
 });
 
@@ -475,11 +479,58 @@ async function updateDiscordMembers() {
   }
 }
 
+// Dynamic System Status Sync
+async function updateSystemStatus() {
+  const statusGrid = document.getElementById('statusGrid');
+  if (!statusGrid) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/web/status`, {
+      headers: { 'ngrok-skip-browser-warning': 'true' }
+    });
+    const data = await res.json();
+    if (data.success && data.statuses) {
+      statusGrid.innerHTML = '';
+      data.statuses.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'status-card';
+        
+        let stateClass = 'working';
+        if (item.status === 'Updating') stateClass = 'updating';
+        else if (item.status === 'Not working') stateClass = 'not-working';
+
+        card.innerHTML = `
+          <div class="status-card-left">
+            <div class="status-card-icon">
+              <i data-lucide="${item.icon || 'shield'}"></i>
+            </div>
+            <div class="status-card-info">
+              <span class="status-card-name">${item.name}</span>
+              <span class="status-card-updated">Checked just now</span>
+            </div>
+          </div>
+          <div class="status-badge ${stateClass}">
+            <div class="status-dot"></div>
+            <span>${item.status}</span>
+          </div>
+        `;
+        statusGrid.appendChild(card);
+      });
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+  } catch (err) {
+    console.error('Failed to sync system statuses:', err);
+  }
+}
+
 // Start Session check on load
 document.addEventListener('DOMContentLoaded', () => {
   initSession();
   updateDiscordMembers();
+  updateSystemStatus();
   setInterval(updateDiscordMembers, 60000); // Update count every 60 seconds
+  setInterval(updateSystemStatus, 30000);   // Update tool status every 30 seconds
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
