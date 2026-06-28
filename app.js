@@ -458,9 +458,28 @@ function setLoading(button, isLoading) {
   }
 }
 
+// Discord member count dynamic sync
+async function updateDiscordMembers() {
+  const discordPillText = document.querySelector('.discord-pill span');
+  if (!discordPillText) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/web/discord-members`, {
+      headers: { 'ngrok-skip-browser-warning': 'true' }
+    });
+    const data = await res.json();
+    if (data.success && data.members) {
+      discordPillText.textContent = `${Number(data.members).toLocaleString()} DISCORD MEMBERS`;
+    }
+  } catch (err) {
+    console.error('Failed to sync Discord member counts:', err);
+  }
+}
+
 // Start Session check on load
 document.addEventListener('DOMContentLoaded', () => {
   initSession();
+  updateDiscordMembers();
+  setInterval(updateDiscordMembers, 60000); // Update count every 60 seconds
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
