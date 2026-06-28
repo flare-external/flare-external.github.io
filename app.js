@@ -432,7 +432,13 @@ planButtons.forEach(btn => {
       if (data.success) {
         if (data.redirect) {
           showToast(data.message || 'Opening secure checkout...', false);
-          window.open(data.url, '_blank');
+          if (typeof Sellix !== 'undefined') {
+            Sellix.checkout({
+              url: data.url
+            });
+          } else {
+            window.open(data.url, '_blank');
+          }
         } else {
           showToast(data.message, false);
           showToast('Sandbox mode: Upgraded successfully! Opening downloads.', false);
