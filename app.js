@@ -74,6 +74,24 @@ navTabs.forEach(tab => {
   });
 });
 
+// Switch to profile on username click
+headerUsername.addEventListener('click', () => {
+  navTabs.forEach(t => t.classList.remove('active'));
+  tabPanels.forEach(panel => {
+    if (panel.id === 'panel-profile') {
+      panel.classList.add('active');
+    } else {
+      panel.classList.remove('active');
+    }
+  });
+});
+
+// CTA Button to Store
+document.getElementById('heroCtaBtn').addEventListener('click', () => {
+  const storeTab = document.querySelector('.nav-tab[data-tab="subscriptions"]');
+  if (storeTab) storeTab.click();
+});
+
 // ── AUTHENTICATION AND API CALLS ──
 
 // Web Register
@@ -154,6 +172,9 @@ function logout() {
   currentUser = null;
   localStorage.removeItem('flare_web_token');
   
+  // Hide scrollbar on login screen
+  document.body.style.overflow = 'hidden';
+  
   // Update view
   mainNav.style.display = 'none';
   userWidget.style.display = 'none';
@@ -170,6 +191,7 @@ headerLogoutBtn.addEventListener('click', logout);
 // Initialize Session
 async function initSession() {
   if (!token) {
+    document.body.style.overflow = 'hidden'; // Hide scrollbar
     authCardContainer.style.display = 'block';
     dashboardContainer.style.display = 'none';
     mainNav.style.display = 'none';
@@ -190,6 +212,7 @@ async function initSession() {
     }
     const data = await res.json();
     if (data.success) {
+      document.body.style.overflow = ''; // Restore scrollbar
       currentUser = data;
       setupDashboardUI();
     } else {
@@ -213,11 +236,16 @@ function setupDashboardUI() {
   profileAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
 
   // Parse subscription details
-  const hasSub = currentUser.subscription_type && currentUser.expires_at;
-  const isExpired = hasSub && currentUser.expires_at !== 'lifetime' && new Date(currentUser.expires_at) < new Date();
+  const hasSub = currentUser.subscription_type;
+  const isExpired = hasSub && currentUser.expires_at !== 'lifetime' && !currentUser.frozen && new Date(currentUser.expires_at) < new Date();
   const subActive = hasSub && !isExpired;
 
-  if (subActive) {
+  if (currentUser.frozen) {
+    profileBadge.textContent = `${currentUser.subscription_type} (Frozen)`;
+    profileBadge.className = 'badge';
+    profileStatusDetail.textContent = 'Frozen (Paused)';
+    profileStatusDetail.style.color = 'var(--accent-pink)';
+  } else if (subActive) {
     profileBadge.textContent = currentUser.subscription_type;
     profileBadge.className = 'badge active';
     profileStatusDetail.textContent = 'Active';
@@ -248,8 +276,32 @@ function setupDashboardUI() {
   const subsEmptyState = document.getElementById('subsEmptyState');
 
   // Clear previous dynamic sub cards
-  const existingCards = activeSubsList.querySelectorAll('.sub-card');
+  const existingCards = activeSubsList.querySelectorAll('.sub-card-container, .game-card-web');
   existingCards.forEach(c => c.remove());
+
+  // Show / Hide Freeze management card
+  const freezeCard = document.getElementById('freezeCard');
+  if (hasSub) {
+    freezeCard.style.display = 'block';
+    const freezeStateLabel = document.getElementById('freezeStateLabel');
+    const toggleFreezeBtn = document.getElementById('toggleFreezeBtn');
+
+    if (currentUser.frozen) {
+      freezeStateLabel.textContent = 'Frozen (Paused)';
+      freezeStateLabel.style.color = 'var(--accent-pink)';
+      toggleFreezeBtn.querySelector('span').textContent = 'Unfreeze Subscription';
+      toggleFreezeBtn.style.background = 'var(--accent-green)';
+      toggleFreezeBtn.style.boxShadow = '0 4px 10px rgba(34, 197, 94, 0.2)';
+    } else {
+      freezeStateLabel.textContent = 'Active';
+      freezeStateLabel.style.color = 'var(--accent-green)';
+      toggleFreezeBtn.querySelector('span').textContent = 'Freeze Subscription';
+      toggleFreezeBtn.style.background = 'var(--accent-purple)';
+      toggleFreezeBtn.style.boxShadow = '';
+    }
+  } else {
+    freezeCard.style.display = 'none';
+  }
 
   if (subActive) {
     subsEmptyState.style.display = 'none';
@@ -259,7 +311,11 @@ function setupDashboardUI() {
     card.className = 'sub-card-container';
     
     let expiryLabel = '';
-    if (currentUser.expires_at === 'lifetime') {
+    if (currentUser.frozen) {
+      let days = Math.round(currentUser.remaining_time / (1000 * 60 * 60 * 24));
+      if (days < 1 && currentUser.remaining_time > 0) days = 'less than 1';
+      expiryLabel = `Frozen (${days} days remaining)`;
+    } else if (currentUser.expires_at === 'lifetime') {
       expiryLabel = 'Lifetime Access';
     } else {
       const expDate = new Date(currentUser.expires_at);
@@ -269,21 +325,27 @@ function setupDashboardUI() {
     }
 
     card.innerHTML = `
-      <div class="game-card-web">
+      <div class="game-card-web ${currentUser.frozen ? 'disabled' : ''}">
         <div class="card-info">
           <div class="card-title-row">
             <span class="card-title">Roblox External Menu</span>
-            <span class="card-badge active">${currentUser.subscription_type}</span>
+            <span class="card-badge ${currentUser.frozen ? '' : 'active'}">${currentUser.subscription_type}</span>
           </div>
           <div class="card-sub" id="subExpiryText">${expiryLabel}</div>
         </div>
-        <button class="dl-btn" id="downloadLoaderBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          <span>Download Loader</span>
-          <div class="spinner-small" style="display: none;"></div>
-        </button>
+        ${currentUser.frozen ? `
+          <button class="dl-btn" disabled style="opacity: 0.5; background: var(--panel-border); box-shadow: none; cursor: not-allowed;">
+            <span>Subscription Frozen</span>
+          </button>
+        ` : `
+          <button class="dl-btn" id="downloadLoaderBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Download Loader</span>
+            <div class="spinner-small" style="display: none;"></div>
+          </button>
+        `}
         <div class="card-icon-box roblox">
           <img src="rblx_icon.png" alt="Roblox" class="card-game-icon">
         </div>
@@ -309,7 +371,9 @@ function setupDashboardUI() {
     activeSubsList.appendChild(cs2Card);
 
     // Setup download button listener
-    document.getElementById('downloadLoaderBtn').addEventListener('click', handleLoaderDownload);
+    if (!currentUser.frozen) {
+      document.getElementById('downloadLoaderBtn').addEventListener('click', handleLoaderDownload);
+    }
   } else {
     subsEmptyState.style.display = 'flex';
   }
@@ -366,7 +430,36 @@ async function handleLoaderDownload(e) {
   }
 }
 
-// Plan Purchasing
+// Freeze / Unfreeze Subscription click listener
+document.getElementById('toggleFreezeBtn').addEventListener('click', async (e) => {
+  const btn = e.currentTarget;
+  setLoading(btn, true);
+  const endpoint = currentUser.frozen ? '/api/web/unfreeze' : '/api/web/freeze';
+
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(data.message, false);
+      initSession();
+    } else {
+      showToast(data.message || 'Action failed.', true);
+    }
+  } catch (err) {
+    showToast('Could not connect to database server.', true);
+  } finally {
+    setLoading(btn, false);
+  }
+});
+
+// Plan Purchasing (Store Tab)
 const planButtons = document.querySelectorAll('.plan-btn');
 planButtons.forEach(btn => {
   btn.addEventListener('click', async () => {
@@ -386,7 +479,9 @@ planButtons.forEach(btn => {
       const data = await res.json();
       if (data.success) {
         showToast(data.message, false);
-        // Refresh session to get updated subscription details
+        // Switch to profile tab so they can see their active subscription and freeze it or download it!
+        showToast('Successfully subscribed! Opening your profile downloads.', false);
+        headerUsername.click();
         initSession();
       } else {
         showToast(data.message || 'Subscription failed.', true);
