@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.1">
+  <link rel="stylesheet" href="style.css?v=2.2">
 </head>
 <body>
 
@@ -38,7 +38,7 @@
       <div class="user-widget" id="userWidget" style="display: none;">
         <div class="user-meta">
           <span class="user-welcome" id="headerUsername">Username</span>
-          <span class="user-status-text">Active User</span>
+          <span class="user-status-text" id="headerUserStatus">Free</span>
         </div>
         <div class="avatar-small" id="headerAvatar">U</div>
         <button class="header-logout-btn" id="headerLogoutBtn">LOGOUT</button>
@@ -183,8 +183,7 @@
             </div>
 
             <!-- Plan 2: 1 Week -->
-            <div class="plan-card popular">
-              <div class="popular-tag">BEST VALUE</div>
+            <div class="plan-card">
               <div class="plan-header">
                 <h4 class="plan-name">Weekly Access</h4>
                 <div class="plan-price">$4.99<span class="plan-duration">/ 7 days</span></div>
@@ -201,8 +200,9 @@
               </button>
             </div>
 
-            <!-- Plan 3: Lifetime -->
-            <div class="plan-card">
+            <!-- Plan 3: Lifetime (Popular / Best Value) -->
+            <div class="plan-card popular">
+              <div class="popular-tag">BEST VALUE</div>
               <div class="plan-header">
                 <h4 class="plan-name">Lifetime Access</h4>
                 <div class="plan-price">$9.99<span class="plan-duration">/ permanent</span></div>
@@ -222,54 +222,64 @@
         </div>
       </section>
 
-      <!-- Tab 3: Profile (Hidden from nav tabs, accessed via username click) -->
+      <!-- Tab 3: Profile (Redesigned Wide Panel, accessed via username click) -->
       <section class="tab-panel" id="panel-profile">
         <div class="profile-layout">
-          <!-- Left: User details & Freeze Card -->
-          <div class="profile-left-col">
-            <div class="card profile-card" style="margin-bottom: 16px;">
-              <div class="profile-header">
-                <div class="avatar-large" id="profileAvatar">U</div>
+          
+          <!-- Row 1: Profile Header Card (Wide) -->
+          <div class="card profile-header-card">
+            <div class="profile-header-main">
+              <div class="avatar-large" id="profileAvatar">U</div>
+              <div class="profile-title-info">
                 <h3 class="profile-username" id="profileName">Username</h3>
-                <span class="badge" id="profileBadge">No Subscription</span>
+                <div class="profile-meta-row">
+                  <span class="badge" id="profileBadge">No Subscription</span>
+                  <span class="status-detail-val" id="profileStatusDetail">Inactive</span>
+                </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Lower Grid (Details & Freeze) -->
+          <div class="profile-grid-lower">
+            <!-- Left: Account Details -->
+            <div class="card details-card">
+              <h4 class="card-title-small">Account Details</h4>
               <div class="profile-details-list">
                 <div class="details-row">
-                  <span class="detail-label">Status</span>
-                  <span class="detail-val" id="profileStatusDetail">Inactive</span>
-                </div>
-                <div class="details-row">
-                  <span class="detail-label">Registered</span>
+                  <span class="detail-label">Registered Date</span>
                   <span class="detail-val" id="profileRegisterDate">June 28, 2026</span>
                 </div>
                 <div class="details-row">
-                  <span class="detail-label">Hardware Lock</span>
+                  <span class="detail-label">Hardware Lock (HWID)</span>
                   <span class="detail-val" id="profileHwidDetail" style="font-family: monospace;">Not Bound</span>
                 </div>
               </div>
             </div>
 
-            <!-- Manage/Freeze Subscription Card -->
+            <!-- Right: Manage / Pause Time (Only visible when has subscription) -->
             <div class="card freeze-card" id="freezeCard" style="display: none;">
-              <h4 class="card-title" style="margin-bottom: 8px;">Subscription Status</h4>
-              <p class="card-text" style="font-size: 12px; margin-bottom: 14px;">
-                Pausing your subscription blocks loader authorization but saves your remaining time from counting down.
+              <h4 class="card-title-small">Pause Time (Freeze)</h4>
+              <p class="card-text-small">
+                Pausing your subscription stops the countdown timer. Access to the loader is disabled until you unfreeze.
               </p>
-              <div class="freeze-status-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 10px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--panel-border); border-radius: 8px;">
-                <span style="font-size: 12px; color: var(--text-muted);">State</span>
-                <span id="freezeStateLabel" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">Active</span>
+              <div class="freeze-control-row">
+                <div class="freeze-status-badge">
+                  <span class="freeze-status-label">State</span>
+                  <span id="freezeStateLabel" class="freeze-status-val">Active</span>
+                </div>
+                <button class="submit-btn" id="toggleFreezeBtn">
+                  <span>Freeze Subscription</span>
+                  <div class="spinner-small" style="display: none;"></div>
+                </button>
               </div>
-              <button class="submit-btn" id="toggleFreezeBtn" style="width: 100%; margin-top: 0; padding: 10px; font-size: 13px;">
-                <span>Freeze Subscription</span>
-                <div class="spinner-small" style="display: none;"></div>
-              </button>
             </div>
           </div>
 
-          <!-- Right: Active Subscriptions / Downloads -->
-          <div class="card info-card">
-            <h3 class="card-title">Active Downloads</h3>
-            <p class="card-text" style="margin-bottom: 16px;">
+          <!-- Row 3: Active Downloads (Wide) -->
+          <div class="card downloads-card">
+            <h4 class="card-title-small" style="margin-bottom: 16px;">Active Downloads</h4>
+            <p class="card-text" style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">
               Download your customized, single-use client below. Sharing the client will cause an immediate ban.
             </p>
             <div class="subscriptions-list" id="activeSubsList">
@@ -282,6 +292,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </section>
 

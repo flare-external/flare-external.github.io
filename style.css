@@ -627,31 +627,99 @@ body {
   color: rgba(120, 110, 130, 0.4);
 }
 
-/* ── PROFILE TAB ── */
+/* ── PROFILE TAB (Wide Redesigned Layout) ── */
 .profile-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 24px;
-}
-
-.profile-left-col {
   display: flex;
   flex-direction: column;
-}
-
-.profile-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.profile-header {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  gap: 20px;
   width: 100%;
+}
+
+.profile-header-card {
+  padding: 20px 24px;
+}
+
+.profile-header-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-title-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.profile-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-detail-val {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-grid-lower {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+.card-title-small {
+  font-size: 13px;
+  font-weight: 950;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.card-text-small {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.freeze-control-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.freeze-status-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  min-width: 130px;
+}
+
+.freeze-status-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.freeze-status-val {
+  font-size: 13px;
+  font-weight: 850;
 }
 
 .avatar-large {

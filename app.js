@@ -250,6 +250,13 @@ function setupDashboardUI() {
   const isExpired = hasSub && currentUser.expires_at !== 'lifetime' && !currentUser.frozen && new Date(currentUser.expires_at) < new Date();
   const subActive = hasSub && !isExpired;
 
+  // Update header status text (Subscribed or Free)
+  const headerUserStatus = document.getElementById('headerUserStatus');
+  if (headerUserStatus) {
+    headerUserStatus.textContent = subActive ? 'Subscribed' : 'Free';
+    headerUserStatus.style.color = subActive ? 'var(--accent-pink)' : 'var(--text-muted)';
+  }
+
   if (currentUser.frozen) {
     profileBadge.textContent = `${currentUser.subscription_type} (Frozen)`;
     profileBadge.className = 'badge';
