@@ -2,7 +2,7 @@
 :root {
   --bg-color: #0c090e;
   --panel-bg: #16111a;
-  --panel-border: #32283b;
+  --panel-border: transparent;
   --text-color: #f0ebf5;
   --text-muted: #786e82;
   
