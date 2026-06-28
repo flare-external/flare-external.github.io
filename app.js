@@ -318,9 +318,7 @@ function setupDashboardUI() {
           <div class="card-sub" id="subExpiryText">${expiryLabel}</div>
         </div>
         <button class="dl-btn" id="downloadLoaderBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
+          <i data-lucide="download" style="width: 14px; height: 14px;"></i>
           <span>Download Loader</span>
           <div class="spinner-small" style="display: none;"></div>
         </button>
@@ -331,6 +329,9 @@ function setupDashboardUI() {
     `;
 
     activeSubsList.appendChild(card);
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
 
     // Also add CS2 Disabled Card to match Loader exactly
     const cs2Card = document.createElement('div');
@@ -458,4 +459,9 @@ function setLoading(button, isLoading) {
 }
 
 // Start Session check on load
-initSession();
+document.addEventListener('DOMContentLoaded', () => {
+  initSession();
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
