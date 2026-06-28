@@ -432,11 +432,16 @@ planButtons.forEach(btn => {
       if (data.success) {
         if (data.redirect) {
           showToast(data.message || 'Opening secure checkout...', false);
-          if (typeof Sellix !== 'undefined') {
-            Sellix.checkout({
-              url: data.url
-            });
+          const trigger = document.getElementById('sellixTriggerBtn');
+          if (trigger && typeof Sellix !== 'undefined') {
+            // Set attributes dynamically on hidden trigger button & click programmatically
+            trigger.setAttribute('data-sellix-product', data.productId);
+            trigger.setAttribute('data-sellix-custom-fields', JSON.stringify({
+              username: currentUser.username
+            }));
+            trigger.click();
           } else {
+            // Fallback: Open pre-populated custom domain page in new tab
             window.open(data.url, '_blank');
           }
         } else {
