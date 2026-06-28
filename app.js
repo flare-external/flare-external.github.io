@@ -17,6 +17,7 @@ const registerForm = document.getElementById('registerForm');
 const mainNav = document.getElementById('mainNav');
 const userWidget = document.getElementById('userWidget');
 const headerUsername = document.getElementById('headerUsername');
+const headerAvatar = document.getElementById('headerAvatar');
 const headerLogoutBtn = document.getElementById('headerLogoutBtn');
 const profileAvatar = document.getElementById('profileAvatar');
 const profileName = document.getElementById('profileName');
@@ -74,22 +75,30 @@ navTabs.forEach(tab => {
   });
 });
 
-// Switch to profile on username click
-headerUsername.addEventListener('click', () => {
-  navTabs.forEach(t => t.classList.remove('active'));
-  tabPanels.forEach(panel => {
-    if (panel.id === 'panel-profile') {
-      panel.classList.add('active');
-    } else {
-      panel.classList.remove('active');
-    }
-  });
+// Switch to profile on username or avatar click
+[headerUsername, headerAvatar].forEach(el => {
+  if (el) {
+    el.addEventListener('click', () => {
+      navTabs.forEach(t => t.classList.remove('active'));
+      tabPanels.forEach(panel => {
+        if (panel.id === 'panel-profile') {
+          panel.classList.add('active');
+        } else {
+          panel.classList.remove('active');
+        }
+      });
+    });
+  }
 });
 
-// CTA Button to Store
+// CTA Buttons
 document.getElementById('heroCtaBtn').addEventListener('click', () => {
   const storeTab = document.querySelector('.nav-tab[data-tab="subscriptions"]');
   if (storeTab) storeTab.click();
+});
+
+document.getElementById('heroDownloadBtn').addEventListener('click', () => {
+  headerUsername.click();
 });
 
 // ── AUTHENTICATION AND API CALLS ──
@@ -232,6 +241,7 @@ function setupDashboardUI() {
   userWidget.style.display = 'flex';
 
   headerUsername.textContent = currentUser.username;
+  headerAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
   profileName.textContent = currentUser.username;
   profileAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
 
