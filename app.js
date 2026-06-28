@@ -430,11 +430,15 @@ planButtons.forEach(btn => {
       });
       const data = await res.json();
       if (data.success) {
-        showToast(data.message, false);
-        // Switch to profile tab so they can see their active subscription and download it!
-        showToast('Successfully subscribed! Opening your profile downloads.', false);
-        headerUsername.click();
-        initSession();
+        if (data.redirect) {
+          showToast(data.message || 'Opening secure checkout...', false);
+          window.open(data.url, '_blank');
+        } else {
+          showToast(data.message, false);
+          showToast('Sandbox mode: Upgraded successfully! Opening downloads.', false);
+          headerUsername.click();
+          initSession();
+        }
       } else {
         showToast(data.message || 'Subscription failed.', true);
       }
