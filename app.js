@@ -316,7 +316,7 @@ function setupDashboardUI() {
       <div class="game-card-web">
         <div class="card-info">
           <div class="card-title-row">
-            <span class="card-title">Roblox External Menu</span>
+            <span class="card-title">Roblox External</span>
             <span class="card-badge active">${currentUser.subscription_type}</span>
           </div>
           <div class="card-sub" id="subExpiryText">${expiryLabel}</div>
@@ -521,6 +521,63 @@ async function updateSystemStatus() {
     }
   } catch (err) {
     console.error('Failed to sync system statuses:', err);
+    statusGrid.innerHTML = `
+      <div class="status-card">
+        <div class="status-card-left">
+          <div class="status-card-icon"><i data-lucide="gamepad-2"></i></div>
+          <div class="status-card-info">
+            <span class="status-card-name">Roblox External</span>
+            <span class="status-card-updated">Connection failed</span>
+          </div>
+        </div>
+        <div class="status-badge not-working">
+          <div class="status-dot"></div>
+          <span>Offline</span>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="status-card-left">
+          <div class="status-card-icon"><i data-lucide="shield-alert"></i></div>
+          <div class="status-card-info">
+            <span class="status-card-name">CS2 External</span>
+            <span class="status-card-updated">Connection failed</span>
+          </div>
+        </div>
+        <div class="status-badge not-working">
+          <div class="status-dot"></div>
+          <span>Offline</span>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="status-card-left">
+          <div class="status-card-icon"><i data-lucide="server"></i></div>
+          <div class="status-card-info">
+            <span class="status-card-name">Flare Servers</span>
+            <span class="status-card-updated">Unreachable</span>
+          </div>
+        </div>
+        <div class="status-badge not-working">
+          <div class="status-dot"></div>
+          <span>Offline</span>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="status-card-left">
+          <div class="status-card-icon"><i data-lucide="key-round"></i></div>
+          <div class="status-card-info">
+            <span class="status-card-name">Authentication Service</span>
+            <span class="status-card-updated">Unreachable</span>
+          </div>
+        </div>
+        <div class="status-badge not-working">
+          <div class="status-dot"></div>
+          <span>Offline</span>
+        </div>
+      </div>
+    `;
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
   }
 }
 
