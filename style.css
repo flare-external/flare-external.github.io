@@ -57,8 +57,8 @@ body {
   filter: blur(140px);
   z-index: -2;
   pointer-events: none;
-  opacity: 0.3;
-  animation: floatGlow 20s ease-in-out infinite alternate;
+  opacity: 0.15;
+  animation: floatGlow 35s ease-in-out infinite alternate;
 }
 
 .bg-glow-1 {
@@ -256,8 +256,8 @@ body {
   flex: 1;
   max-width: 1000px;
   width: 100%;
-  margin: 110px auto 40px auto; /* Top margin clears capsule header */
-  padding: 40px 24px;
+  margin: 90px auto 10px auto;
+  padding: 20px 24px;
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -420,10 +420,10 @@ body {
 
 /* ── HOME TAB (Centred Sheldon Vibe) ── */
 .hero-section {
-  padding: 100px 20px 60px 20px;
+  padding: 40px 20px 24px 20px;
   text-align: center;
   background: radial-gradient(circle at center, rgba(236, 72, 153, 0.05) 0%, transparent 60%);
-  margin-bottom: 45px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -531,7 +531,7 @@ body {
 }
 
 .showcase-section {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
@@ -539,7 +539,7 @@ body {
   font-size: 24px;
   font-weight: 800;
   color: white;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .showcase-grid {
@@ -586,7 +586,7 @@ body {
   width: 100%;
   max-width: 900px;
   animation: fadeIn 0.3s ease;
-  min-height: calc(100vh - 180px); /* Fill screen to push footer down */
+  min-height: calc(100vh - 160px); /* Fill screen to push footer down */
   display: flex;
   flex-direction: column;
 }
@@ -607,7 +607,7 @@ body {
 
 .footer {
   border-top: 1px solid var(--panel-border);
-  padding: 40px 20px 20px 20px;
+  padding: 24px 20px 12px 20px;
   text-align: center;
   margin-top: auto; /* Pushes footer to the bottom of flex container */
   width: 100%;
@@ -1269,9 +1269,9 @@ body {
 .status-dot::after {
   content: '';
   position: absolute;
-  inset: -2px;
+  inset: -1px;
   border-radius: 50%;
-  animation: pulseGlow 1.5s infinite;
+  animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
 .status-badge.working .status-dot, .status-badge.working .status-dot::after {
@@ -1288,5 +1288,6 @@ body {
 
 @keyframes pulseGlow {
   0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2.5); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0.8; }
 }

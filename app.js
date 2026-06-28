@@ -495,7 +495,7 @@ async function updateSystemStatus() {
         card.className = 'status-card';
         
         let stateClass = 'working';
-        if (item.status === 'Updating') stateClass = 'updating';
+        if (item.status === 'Updating' || item.status === 'Currently in work') stateClass = 'updating';
         else if (item.status === 'Not working') stateClass = 'not-working';
 
         card.innerHTML = `
