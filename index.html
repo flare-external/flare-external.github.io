@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.2">
+  <link rel="stylesheet" href="style.css?v=2.3">
 </head>
 <body>
 
@@ -140,9 +140,9 @@
               <p>Constantly updated offset mapping and memory protection checks.</p>
             </div>
             <div class="card showcase-card">
-              <div class="showcase-icon">❄️</div>
-              <h4>Time Pausing</h4>
-              <p>Freeze and unfreeze your timed subscription at any time to preserve duration.</p>
+              <div class="showcase-icon">🚀</div>
+              <h4>Dynamic Builds</h4>
+              <p>Custom builds compiled dynamically upon download for keyless auto-login security.</p>
             </div>
           </div>
         </div>
@@ -161,7 +161,7 @@
       <section class="tab-panel" id="panel-subscriptions">
         <div class="store-layout">
           <h3 class="section-title">Subscription Plans</h3>
-          <p class="section-subtitle">Get instant access to the loader. Freeze your duration whenever you are away.</p>
+          <p class="section-subtitle">Get instant access to the loader. Dynamic customized builds delivered directly to you.</p>
           
           <div class="plans-grid">
             <!-- Plan 1: 1 Day -->
@@ -174,7 +174,7 @@
                 <li>Roblox External Menu access</li>
                 <li>Single-use loader compilation</li>
                 <li>Hardware-locking protection</li>
-                <li>Pause/Freeze support</li>
+                <li>24-hour runtime access</li>
               </ul>
               <button class="plan-btn" data-plan="1day">
                 <span>Select Plan</span>
@@ -192,7 +192,7 @@
                 <li>Roblox External Menu access</li>
                 <li>Single-use loader compilation</li>
                 <li>Hardware-locking protection</li>
-                <li>Pause/Freeze support</li>
+                <li>7-day runtime access</li>
               </ul>
               <button class="plan-btn" data-plan="1week">
                 <span>Select Plan</span>
@@ -240,38 +240,17 @@
             </div>
           </div>
 
-          <!-- Row 2: Lower Grid (Details & Freeze) -->
-          <div class="profile-grid-lower">
-            <!-- Left: Account Details -->
-            <div class="card details-card">
-              <h4 class="card-title-small">Account Details</h4>
-              <div class="profile-details-list">
-                <div class="details-row">
-                  <span class="detail-label">Registered Date</span>
-                  <span class="detail-val" id="profileRegisterDate">June 28, 2026</span>
-                </div>
-                <div class="details-row">
-                  <span class="detail-label">Hardware Lock (HWID)</span>
-                  <span class="detail-val" id="profileHwidDetail" style="font-family: monospace;">Not Bound</span>
-                </div>
+          <!-- Row 2: Account Details Card (Wide) -->
+          <div class="card details-card">
+            <h4 class="card-title-small">Account Details</h4>
+            <div class="profile-details-list">
+              <div class="details-row">
+                <span class="detail-label">Registered Date</span>
+                <span class="detail-val" id="profileRegisterDate">June 28, 2026</span>
               </div>
-            </div>
-
-            <!-- Right: Manage / Pause Time (Only visible when has subscription) -->
-            <div class="card freeze-card" id="freezeCard" style="display: none;">
-              <h4 class="card-title-small">Pause Time (Freeze)</h4>
-              <p class="card-text-small">
-                Pausing your subscription stops the countdown timer. Access to the loader is disabled until you unfreeze.
-              </p>
-              <div class="freeze-control-row">
-                <div class="freeze-status-badge">
-                  <span class="freeze-status-label">State</span>
-                  <span id="freezeStateLabel" class="freeze-status-val">Active</span>
-                </div>
-                <button class="submit-btn" id="toggleFreezeBtn">
-                  <span>Freeze Subscription</span>
-                  <div class="spinner-small" style="display: none;"></div>
-                </button>
+              <div class="details-row">
+                <span class="detail-label">Hardware Lock (HWID)</span>
+                <span class="detail-val" id="profileHwidDetail" style="font-family: monospace;">Not Bound</span>
               </div>
             </div>
           </div>

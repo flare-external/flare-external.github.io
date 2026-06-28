@@ -665,13 +665,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-.profile-grid-lower {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  width: 100%;
-}
-
 .card-title-small {
   font-size: 13px;
   font-weight: 950;
@@ -688,38 +681,6 @@ body {
   line-height: 1.5;
   margin-bottom: 12px;
   text-align: left;
-}
-
-.freeze-control-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 8px;
-}
-
-.freeze-status-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  padding: 8px 16px;
-  min-width: 130px;
-}
-
-.freeze-status-label {
-  font-size: 9px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
-
-.freeze-status-val {
-  font-size: 13px;
-  font-weight: 850;
 }
 
 .avatar-large {
