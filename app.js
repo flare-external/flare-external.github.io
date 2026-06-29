@@ -115,6 +115,35 @@ registerForm.addEventListener('submit', async (e) => {
   const confirmPassword = document.getElementById('registerConfirmPassword').value;
   const submitBtn = document.getElementById('registerSubmitBtn');
   
+  if (username.length < 4) {
+    showToast('Username must be at least 4 characters long.', true);
+    return;
+  }
+
+  const allowedDomains = [
+    'gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com', 
+    'aol.com', 'proton.me', 'protonmail.com', 'live.com', 'msn.com', 
+    'mail.com', 'zoho.com'
+  ];
+  const domain = email.split('@')[1]?.toLowerCase();
+  if (!allowedDomains.includes(domain)) {
+    showToast('Use a major email provider (Gmail, Hotmail, Outlook, Proton, etc.).', true);
+    return;
+  }
+
+  if (password.length < 8) {
+    showToast('Password must be at least 8 characters long.', true);
+    return;
+  }
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[\W_]/.test(password);
+  if (!hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
+    showToast('Password must contain uppercase, lowercase, number, and special character.', true);
+    return;
+  }
+
   if (password !== confirmPassword) {
     showToast('Passwords do not match.', true);
     return;
