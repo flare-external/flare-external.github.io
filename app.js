@@ -110,6 +110,7 @@ document.getElementById('heroDownloadBtn').addEventListener('click', () => {
 registerForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const username = document.getElementById('registerUsername').value.trim();
+  const email = document.getElementById('registerEmail').value.trim();
   const password = document.getElementById('registerPassword').value;
   const confirmPassword = document.getElementById('registerConfirmPassword').value;
   const submitBtn = document.getElementById('registerSubmitBtn');
@@ -127,7 +128,7 @@ registerForm.addEventListener('submit', async (e) => {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': 'true'
       },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, email, password })
     });
     const data = await res.json();
     if (data.success) {
@@ -250,7 +251,8 @@ function setupDashboardUI() {
 
   // Parse subscription details
   const hasSub = currentUser.subscription_type;
-  const isExpired = hasSub && currentUser.expires_at !== 'lifetime' && new Date(currentUser.expires_at) < new Date();
+  const isLifetime = currentUser.expires_at === 'lifetime';
+  const isExpired = hasSub && !isLifetime && new Date(currentUser.expires_at) < new Date();
   const subActive = hasSub && !isExpired;
 
   // Update header status text (Subscribed or Free)
@@ -611,6 +613,14 @@ async function updateSystemStatus() {
 
 // Start Session check on load
 document.addEventListener('DOMContentLoaded', () => {
+  // Check if email has just been verified
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('verified') === 'true') {
+    showToast('Your email has been verified successfully! You can now log in.', false);
+    const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+  }
+
   initSession();
   updateDiscordMembers();
   updateSystemStatus();
