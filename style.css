@@ -1300,3 +1300,68 @@ body {
   background-color: #ef4444;
   box-shadow: 0 0 6px #ef4444;
 }
+
+/* ── RANK BADGES ── */
+.widget-rank {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-left: 6px;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.widget-rank.owner {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.15);
+}
+
+.widget-rank.mod {
+  background: rgba(147, 51, 234, 0.12);
+  color: #c084fc;
+  border: 1px solid rgba(147, 51, 234, 0.25);
+}
+
+.widget-rank.user {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--panel-border);
+}
+
+/* Profile Rank Badge */
+.rank-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.rank-badge.owner {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.rank-badge.mod {
+  background: rgba(147, 51, 234, 0.12);
+  color: #c084fc;
+  border: 1px solid rgba(147, 51, 234, 0.25);
+  box-shadow: 0 0 10px rgba(147, 51, 234, 0.15);
+}
+
+.rank-badge.user {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  border: 1px solid var(--panel-border);
+}

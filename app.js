@@ -292,10 +292,11 @@ function setupDashboardUI() {
   }
 
   // Parse subscription details
+  const isStaff = currentUser.rank === 'owner' || currentUser.rank === 'mod';
   const hasSub = currentUser.subscription_type;
-  const isLifetime = currentUser.expires_at === 'lifetime';
-  const isExpired = hasSub && !isLifetime && new Date(currentUser.expires_at) < new Date();
-  const subActive = hasSub && !isExpired;
+  const isLifetime = currentUser.expires_at === 'lifetime' || isStaff;
+  const isExpired = !isStaff && hasSub && !isLifetime && new Date(currentUser.expires_at) < new Date();
+  const subActive = isStaff || (hasSub && !isExpired);
 
   // Update header status text (Subscribed or Free)
   const headerUserStatus = document.getElementById('headerUserStatus');
@@ -306,7 +307,7 @@ function setupDashboardUI() {
 
   if (subActive) {
     let subLabel = '';
-    if (currentUser.subscription_type === 'lifetime') {
+    if (isLifetime) {
       subLabel = 'Lifetime';
     } else {
       const msLeft = new Date(currentUser.expires_at) - new Date();
@@ -365,7 +366,7 @@ function setupDashboardUI() {
     card.className = 'sub-card-container';
     
     let expiryLabel = '';
-    if (currentUser.expires_at === 'lifetime') {
+    if (isLifetime) {
       expiryLabel = 'Lifetime Access';
     } else {
       const expDate = new Date(currentUser.expires_at);
@@ -379,7 +380,7 @@ function setupDashboardUI() {
         <div class="card-info">
           <div class="card-title-row">
             <span class="card-title">Roblox External</span>
-            <span class="card-badge active">${currentUser.subscription_type}</span>
+            <span class="card-badge active">${currentUser.subscription_type || 'lifetime'}</span>
           </div>
           <div class="card-sub" id="subExpiryText">${expiryLabel}</div>
         </div>

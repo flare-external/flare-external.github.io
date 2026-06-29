@@ -16,7 +16,7 @@
   <script src="https://cdn.sellix.io/static/js/embed.js"></script>
   <link href="https://cdn.sellix.io/static/css/embed.css" rel="stylesheet" />
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=3.3">
+  <link rel="stylesheet" href="style.css?v=3.4">
 </head>
 <body>
 
@@ -45,7 +45,10 @@
       <!-- Logout / User Widget (Only visible when logged in) -->
       <div class="user-widget" id="userWidget" style="display: none;">
         <div class="user-meta">
-          <span class="user-welcome" id="headerUsername">Username</span>
+          <span class="user-welcome">
+            <span id="headerUsername">Username</span>
+            <span class="widget-rank" id="headerRank">User</span>
+          </span>
           <span class="user-status-text" id="headerUserStatus">Free</span>
         </div>
         <div class="avatar-small" id="headerAvatar">U</div>
@@ -237,6 +240,7 @@
                 <h3 class="profile-username" id="profileName">Username</h3>
                 <div class="profile-meta-row">
                   <span class="badge" id="profileBadge">No Subscription</span>
+                  <span class="rank-badge" id="profileRank">User</span>
                 </div>
               </div>
             </div>
