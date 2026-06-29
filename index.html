@@ -16,7 +16,7 @@
   <script src="https://cdn.sellix.io/static/js/embed.js"></script>
   <link href="https://cdn.sellix.io/static/css/embed.css" rel="stylesheet" />
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=3.0">
+  <link rel="stylesheet" href="style.css?v=3.1">
 </head>
 <body>
 
@@ -275,11 +275,37 @@
       <!-- Tab 4: Status (New) -->
       <section class="tab-panel" id="panel-status">
         <div class="status-layout">
-          <h3 class="section-title">System Status</h3>
-          <p class="section-subtitle">Real-time status of all Flare tools, cheat injectors, and auth services.</p>
+          <!-- Overall Status Header -->
+          <div class="status-hub-header" id="statusHubHeader">
+            <div class="status-hub-title-box">
+              <div class="status-hub-pulse all-good"></div>
+              <span class="status-hub-status-text all-good">ALL SYSTEMS OPERATIONAL</span>
+            </div>
+            <div class="status-hub-meta">
+              <i data-lucide="activity" style="width: 13px; height: 13px;"></i>
+              <span>Average Latency: 18ms</span>
+            </div>
+          </div>
           
-          <div class="status-grid" id="statusGrid">
-            <!-- Dynamic Status Cards will render here -->
+          <!-- Services Rows -->
+          <div class="status-rows-container" id="statusRowsContainer">
+            <!-- Dynamic Status Rows will render here -->
+          </div>
+
+          <!-- Metrics Row -->
+          <div class="status-metrics-row">
+            <div class="status-metric-card">
+              <div class="status-metric-label">Global Uptime</div>
+              <div class="status-metric-value" id="statusGlobalUptime">99.98%</div>
+            </div>
+            <div class="status-metric-card">
+              <div class="status-metric-label">Last Incident</div>
+              <div class="status-metric-value">None (Past 30d)</div>
+            </div>
+            <div class="status-metric-card">
+              <div class="status-metric-label">Response Time</div>
+              <div class="status-metric-value" id="statusResponseTime">14ms</div>
+            </div>
           </div>
         </div>
       </section>

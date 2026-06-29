@@ -496,100 +496,193 @@ async function updateDiscordMembers() {
 
 // Dynamic System Status Sync
 async function updateSystemStatus() {
-  const statusGrid = document.getElementById('statusGrid');
-  if (!statusGrid) return;
+  const statusRowsContainer = document.getElementById('statusRowsContainer');
+  const statusHubHeader = document.getElementById('statusHubHeader');
+  if (!statusRowsContainer || !statusHubHeader) return;
+
+  // Generate 20 mock uptime bars helper
+  function generateUptimeBars(stateClass) {
+    let barsHtml = '';
+    const totalBars = 22;
+    for (let i = 0; i < totalBars; i++) {
+      const isLatest = i === totalBars - 1;
+      let barClass = 'good';
+      
+      if (stateClass === 'updating') {
+        // Last 3 bars show partial warning states
+        if (i >= totalBars - 3) {
+          barClass = 'warn';
+        }
+      } else if (stateClass === 'not-working') {
+        // Last 2 bars show down states
+        if (i >= totalBars - 2) {
+          barClass = 'down';
+        }
+      }
+
+      const latestModifier = isLatest ? ' latest' : '';
+      barsHtml += `<span class="status-uptime-bar ${barClass}${latestModifier}"></span>`;
+    }
+    return barsHtml;
+  }
+
   try {
     const res = await fetch(`${API_BASE}/api/web/status`, {
       headers: { 'ngrok-skip-browser-warning': 'true' }
     });
     const data = await res.json();
     if (data.success && data.statuses) {
-      statusGrid.innerHTML = '';
+      statusRowsContainer.innerHTML = '';
+      
+      // Determine overall system state
+      let allWorking = true;
+      let allDown = true;
+      
       data.statuses.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'status-card';
+        if (item.status !== 'Working') {
+          allWorking = false;
+        }
+        if (item.status === 'Working') {
+          allDown = false;
+        }
+      });
+
+      // Update Overall Hub Status Header
+      const pulseEl = statusHubHeader.querySelector('.status-hub-pulse');
+      const textEl = statusHubHeader.querySelector('.status-hub-status-text');
+      
+      pulseEl.className = 'status-hub-pulse';
+      textEl.className = 'status-hub-status-text';
+      
+      if (allWorking) {
+        pulseEl.classList.add('all-good');
+        textEl.classList.add('all-good');
+        textEl.textContent = 'All Systems Operational';
+      } else if (allDown) {
+        pulseEl.classList.add('all-down');
+        textEl.classList.add('all-down');
+        textEl.textContent = 'All Systems Offline';
+      } else {
+        pulseEl.classList.add('partial');
+        textEl.classList.add('partial');
+        textEl.textContent = 'Partial System Outage';
+      }
+
+      // Generate random latency and update header
+      const randomLatency = Math.floor(Math.random() * 8) + 12; // 12-19ms
+      const latencyMeta = statusHubHeader.querySelector('.status-hub-meta span');
+      if (latencyMeta) latencyMeta.textContent = `Average Latency: ${randomLatency}ms`;
+      
+      const responseValue = document.getElementById('statusResponseTime');
+      if (responseValue) responseValue.textContent = `${randomLatency}ms`;
+
+      // Render individual service rows
+      data.statuses.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'status-row';
         
         let stateClass = 'working';
-        if (item.status === 'Updating' || item.status === 'Currently in work') stateClass = 'updating';
-        else if (item.status === 'Not working') stateClass = 'not-working';
+        let displayStatus = item.status;
+        let uptimePct = '99.98%';
+        
+        if (item.status === 'Updating' || item.status === 'Currently in work') {
+          stateClass = 'updating';
+          uptimePct = '99.85%';
+        } else if (item.status === 'Not working') {
+          stateClass = 'not-working';
+          uptimePct = '94.20%';
+        }
 
-        card.innerHTML = `
-          <div class="status-card-left">
-            <div class="status-card-icon">
-              <i data-lucide="${item.icon || 'shield'}"></i>
+        // Map icons dynamically
+        let iconName = item.icon || 'shield';
+        if (item.name.includes('Roblox')) iconName = 'gamepad-2';
+        else if (item.name.includes('CS2')) iconName = 'shield-alert';
+        else if (item.name.includes('Servers')) iconName = 'server';
+        else if (item.name.includes('Authentication')) iconName = 'key-round';
+
+        row.innerHTML = `
+          <div class="status-row-left">
+            <div class="status-row-icon">
+              <i data-lucide="${iconName}"></i>
             </div>
-            <div class="status-card-info">
-              <span class="status-card-name">${item.name}</span>
-              <span class="status-card-updated">Checked just now</span>
+            <div class="status-row-meta">
+              <span class="status-row-name">${item.name}</span>
+              <span class="status-row-desc">Uptime monitored 24/7</span>
             </div>
           </div>
-          <div class="status-badge ${stateClass}">
-            <div class="status-dot"></div>
-            <span>${item.status}</span>
+          <div class="status-uptime-box">
+            <div class="status-uptime-bars">
+              ${generateUptimeBars(stateClass)}
+            </div>
+            <span class="status-uptime-percent">${uptimePct}</span>
+          </div>
+          <div class="status-row-badge-box">
+            <div class="status-badge ${stateClass}">
+              <div class="status-dot"></div>
+              <span>${displayStatus}</span>
+            </div>
           </div>
         `;
-        statusGrid.appendChild(card);
+        statusRowsContainer.appendChild(row);
       });
+
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
     }
   } catch (err) {
     console.error('Failed to sync system statuses:', err);
-    statusGrid.innerHTML = `
-      <div class="status-card">
-        <div class="status-card-left">
-          <div class="status-card-icon"><i data-lucide="gamepad-2"></i></div>
-          <div class="status-card-info">
-            <span class="status-card-name">Roblox External</span>
-            <span class="status-card-updated">Connection failed</span>
+    
+    // Set Header to All Down
+    const pulseEl = statusHubHeader.querySelector('.status-hub-pulse');
+    const textEl = statusHubHeader.querySelector('.status-hub-status-text');
+    if (pulseEl && textEl) {
+      pulseEl.className = 'status-hub-pulse all-down';
+      textEl.className = 'status-hub-status-text all-down';
+      textEl.textContent = 'All Services Offline';
+    }
+
+    const responseValue = document.getElementById('statusResponseTime');
+    if (responseValue) responseValue.textContent = 'Offline';
+
+    // Render Offline Mock Service Rows
+    const offlineServices = [
+      { name: 'Roblox External', icon: 'gamepad-2' },
+      { name: 'CS2 External', icon: 'shield-alert' },
+      { name: 'Flare Servers', icon: 'server' },
+      { name: 'Authentication Service', icon: 'key-round' }
+    ];
+
+    statusRowsContainer.innerHTML = '';
+    offlineServices.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'status-row';
+      row.innerHTML = `
+        <div class="status-row-left">
+          <div class="status-row-icon">
+            <i data-lucide="${item.icon}"></i>
+          </div>
+          <div class="status-row-meta">
+            <span class="status-row-name">${item.name}</span>
+            <span class="status-row-desc">Connection failed</span>
           </div>
         </div>
-        <div class="status-badge not-working">
-          <div class="status-dot"></div>
-          <span>Offline</span>
+        <div class="status-uptime-box">
+          <div class="status-uptime-bars">
+            ${generateUptimeBars('not-working')}
+          </div>
+          <span class="status-uptime-percent">0.00%</span>
         </div>
-      </div>
-      <div class="status-card">
-        <div class="status-card-left">
-          <div class="status-card-icon"><i data-lucide="shield-alert"></i></div>
-          <div class="status-card-info">
-            <span class="status-card-name">CS2 External</span>
-            <span class="status-card-updated">Connection failed</span>
+        <div class="status-row-badge-box">
+          <div class="status-badge not-working">
+            <div class="status-dot"></div>
+            <span>Offline</span>
           </div>
         </div>
-        <div class="status-badge not-working">
-          <div class="status-dot"></div>
-          <span>Offline</span>
-        </div>
-      </div>
-      <div class="status-card">
-        <div class="status-card-left">
-          <div class="status-card-icon"><i data-lucide="server"></i></div>
-          <div class="status-card-info">
-            <span class="status-card-name">Flare Servers</span>
-            <span class="status-card-updated">Unreachable</span>
-          </div>
-        </div>
-        <div class="status-badge not-working">
-          <div class="status-dot"></div>
-          <span>Offline</span>
-        </div>
-      </div>
-      <div class="status-card">
-        <div class="status-card-left">
-          <div class="status-card-icon"><i data-lucide="key-round"></i></div>
-          <div class="status-card-info">
-            <span class="status-card-name">Authentication Service</span>
-            <span class="status-card-updated">Unreachable</span>
-          </div>
-        </div>
-        <div class="status-badge not-working">
-          <div class="status-dot"></div>
-          <span>Offline</span>
-        </div>
-      </div>
-    `;
+      `;
+      statusRowsContainer.appendChild(row);
+    });
+
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }

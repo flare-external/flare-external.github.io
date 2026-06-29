@@ -25,12 +25,17 @@
   -webkit-user-drag: none;
 }
 
+html, body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -256,11 +261,13 @@ body {
   flex: 1;
   max-width: 1000px;
   width: 100%;
-  margin: 90px auto 10px auto;
-  padding: 20px 24px;
+  margin: 90px auto 0 auto;
+  padding: 10px 24px 20px 24px;
   display: flex;
   justify-content: center;
   align-items: stretch;
+  height: calc(100vh - 90px);
+  overflow: hidden;
 }
 
 /* ── CARDS ── */
@@ -586,14 +593,18 @@ body {
   width: 100%;
   max-width: 900px;
   animation: fadeIn 0.3s ease;
-  min-height: calc(100vh - 160px); /* Fill screen to push footer down */
+  height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .tab-panel {
   display: none;
-  flex: 1; /* Make active tab fill available vertical space */
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .tab-panel.active {
@@ -607,10 +618,12 @@ body {
 
 .footer {
   border-top: 1px solid var(--panel-border);
-  padding: 24px 20px 12px 20px;
+  padding: 16px 20px 10px 20px;
   text-align: center;
   margin-top: auto; /* Pushes footer to the bottom of flex container */
   width: 100%;
+  background: var(--bg-color);
+  z-index: 10;
 }
 
 .footer-links {
@@ -1168,15 +1181,8 @@ body {
   }
 }
 
-/* ── STATUS TAB STYLES ── */
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 10px;
-}
-
-.status-card {
+/* ── STATUS HUB STYLES ── */
+.status-hub-header {
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: 16px;
@@ -1184,23 +1190,115 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: transform 0.2s;
+  margin-bottom: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.status-card:hover {
-  transform: translateY(-2px);
-}
-
-.status-card-left {
+.status-hub-title-box {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.status-card-icon {
-  width: 40px;
-  height: 40px;
+.status-hub-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+}
+.status-hub-pulse.all-good {
+  background-color: var(--accent-green);
+}
+.status-hub-pulse.all-good::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background-color: var(--accent-green);
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+.status-hub-pulse.partial {
+  background-color: #eab308;
+}
+.status-hub-pulse.partial::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background-color: #eab308;
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+.status-hub-pulse.all-down {
+  background-color: #ef4444;
+}
+.status-hub-pulse.all-down::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+.status-hub-status-text {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.status-hub-status-text.all-good {
+  color: var(--accent-green);
+}
+.status-hub-status-text.partial {
+  color: #eab308;
+}
+.status-hub-status-text.all-down {
+  color: #ef4444;
+}
+
+.status-hub-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-rows-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.status-row {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.status-row:hover {
+  transform: translateX(2px);
+}
+
+.status-row-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.status-row-icon {
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.02);
   display: flex;
@@ -1208,28 +1306,77 @@ body {
   justify-content: center;
   color: var(--text-muted);
 }
-
-.status-card-icon svg {
-  width: 20px;
-  height: 20px;
+.status-row-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
-.status-card-info {
+.status-row-meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  text-align: left;
+  gap: 2px;
 }
-
-.status-card-name {
-  font-size: 15px;
+.status-row-name {
+  font-size: 14px;
   font-weight: 700;
   color: #fff;
 }
-
-.status-card-updated {
+.status-row-desc {
   font-size: 11px;
   color: var(--text-muted);
+}
+
+.status-uptime-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-right: 20px;
+}
+
+.status-uptime-bars {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+.status-uptime-bar {
+  width: 3px;
+  height: 16px;
+  border-radius: 1px;
+}
+.status-uptime-bar.good {
+  background-color: rgba(34, 197, 94, 0.25);
+}
+.status-uptime-bar.good.latest {
+  background-color: var(--accent-green);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+.status-uptime-bar.warn {
+  background-color: rgba(234, 179, 8, 0.25);
+}
+.status-uptime-bar.warn.latest {
+  background-color: #eab308;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.5);
+}
+.status-uptime-bar.down {
+  background-color: rgba(239, 68, 68, 0.25);
+}
+.status-uptime-bar.down.latest {
+  background-color: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.status-uptime-percent {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  width: 55px;
+  text-align: right;
+}
+
+.status-row-badge-box {
+  min-width: 120px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .status-badge {
@@ -1284,6 +1431,35 @@ body {
 
 .status-badge.not-working .status-dot, .status-badge.not-working .status-dot::after {
   background-color: #ef4444;
+}
+
+/* Operational Stats Cards */
+.status-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.status-metric-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.status-metric-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.status-metric-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
 }
 
 @keyframes pulseGlow {
