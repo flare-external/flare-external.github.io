@@ -22,6 +22,8 @@ const headerLogoutBtn = document.getElementById('headerLogoutBtn');
 const profileAvatar = document.getElementById('profileAvatar');
 const profileName = document.getElementById('profileName');
 const profileBadge = document.getElementById('profileBadge');
+const profileRank = document.getElementById('profileRank');
+const headerRank = document.getElementById('headerRank');
 const profileRegisterDate = document.getElementById('profileRegisterDate');
 const profileHwidDetail = document.getElementById('profileHwidDetail');
 
@@ -277,6 +279,17 @@ function setupDashboardUI() {
   headerAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
   profileName.textContent = currentUser.username;
   profileAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+
+  // Set Ranks
+  const rank = currentUser.rank || 'user';
+  if (headerRank) {
+    headerRank.textContent = rank;
+    headerRank.className = `widget-rank ${rank.toLowerCase()}`;
+  }
+  if (profileRank) {
+    profileRank.textContent = rank;
+    profileRank.className = `rank-badge ${rank.toLowerCase()}`;
+  }
 
   // Parse subscription details
   const hasSub = currentUser.subscription_type;
