@@ -1181,8 +1181,15 @@ body {
   }
 }
 
-/* ── STATUS HUB STYLES ── */
-.status-hub-header {
+/* ── STATUS TAB STYLES ── */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.status-card {
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: 16px;
@@ -1190,115 +1197,23 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  transition: transform 0.2s;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.status-hub-title-box {
+.status-card:hover {
+  transform: translateY(-2px);
+}
+
+.status-card-left {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.status-hub-pulse {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  position: relative;
-}
-.status-hub-pulse.all-good {
-  background-color: var(--accent-green);
-}
-.status-hub-pulse.all-good::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background-color: var(--accent-green);
-  animation: pulseGlow 2.5s ease-in-out infinite;
-}
-
-.status-hub-pulse.partial {
-  background-color: #eab308;
-}
-.status-hub-pulse.partial::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background-color: #eab308;
-  animation: pulseGlow 2.5s ease-in-out infinite;
-}
-
-.status-hub-pulse.all-down {
-  background-color: #ef4444;
-}
-.status-hub-pulse.all-down::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background-color: #ef4444;
-  animation: pulseGlow 2.5s ease-in-out infinite;
-}
-
-.status-hub-status-text {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-.status-hub-status-text.all-good {
-  color: var(--accent-green);
-}
-.status-hub-status-text.partial {
-  color: #eab308;
-}
-.status-hub-status-text.all-down {
-  color: #ef4444;
-}
-
-.status-hub-meta {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.status-rows-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.status-row {
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  border-radius: 16px;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: transform 0.2s;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-.status-row:hover {
-  transform: translateX(2px);
-}
-
-.status-row-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;
-}
-
-.status-row-icon {
-  width: 38px;
-  height: 38px;
+.status-card-icon {
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.02);
   display: flex;
@@ -1306,77 +1221,35 @@ body {
   justify-content: center;
   color: var(--text-muted);
 }
-.status-row-icon svg {
-  width: 18px;
-  height: 18px;
+
+.status-card-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
-.status-row-meta {
+.status-game-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.1));
+}
+
+.status-card-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  text-align: left;
 }
-.status-row-name {
+
+.status-card-name {
   font-size: 14px;
   font-weight: 700;
   color: #fff;
 }
-.status-row-desc {
+
+.status-card-updated {
   font-size: 11px;
   color: var(--text-muted);
-}
-
-.status-uptime-box {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-right: 20px;
-}
-
-.status-uptime-bars {
-  display: flex;
-  gap: 2px;
-  align-items: center;
-}
-.status-uptime-bar {
-  width: 3px;
-  height: 16px;
-  border-radius: 1px;
-}
-.status-uptime-bar.good {
-  background-color: rgba(34, 197, 94, 0.25);
-}
-.status-uptime-bar.good.latest {
-  background-color: var(--accent-green);
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
-}
-.status-uptime-bar.warn {
-  background-color: rgba(234, 179, 8, 0.25);
-}
-.status-uptime-bar.warn.latest {
-  background-color: #eab308;
-  box-shadow: 0 0 8px rgba(234, 179, 8, 0.5);
-}
-.status-uptime-bar.down {
-  background-color: rgba(239, 68, 68, 0.25);
-}
-.status-uptime-bar.down.latest {
-  background-color: #ef4444;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
-}
-
-.status-uptime-percent {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 600;
-  width: 55px;
-  text-align: right;
-}
-
-.status-row-badge-box {
-  min-width: 120px;
-  display: flex;
-  justify-content: flex-end;
 }
 
 .status-badge {
@@ -1413,57 +1286,17 @@ body {
   position: relative;
 }
 
-.status-dot::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: 50%;
-  animation: pulseGlow 2.5s ease-in-out infinite;
-}
-
-.status-badge.working .status-dot, .status-badge.working .status-dot::after {
+.status-badge.working .status-dot {
   background-color: var(--accent-green);
+  box-shadow: 0 0 6px var(--accent-green);
 }
 
-.status-badge.updating .status-dot, .status-badge.updating .status-dot::after {
+.status-badge.updating .status-dot {
   background-color: #eab308;
+  box-shadow: 0 0 6px #eab308;
 }
 
-.status-badge.not-working .status-dot, .status-badge.not-working .status-dot::after {
+.status-badge.not-working .status-dot {
   background-color: #ef4444;
-}
-
-/* Operational Stats Cards */
-.status-metrics-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.status-metric-card {
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-.status-metric-label {
-  font-size: 10px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-.status-metric-value {
-  font-size: 16px;
-  font-weight: 800;
-  color: #fff;
-}
-
-@keyframes pulseGlow {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.6); opacity: 0.3; }
-  100% { transform: scale(1); opacity: 0.8; }
+  box-shadow: 0 0 6px #ef4444;
 }
