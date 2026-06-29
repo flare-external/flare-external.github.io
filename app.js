@@ -22,7 +22,6 @@ const headerLogoutBtn = document.getElementById('headerLogoutBtn');
 const profileAvatar = document.getElementById('profileAvatar');
 const profileName = document.getElementById('profileName');
 const profileBadge = document.getElementById('profileBadge');
-const profileStatusDetail = document.getElementById('profileStatusDetail');
 const profileRegisterDate = document.getElementById('profileRegisterDate');
 const profileHwidDetail = document.getElementById('profileHwidDetail');
 
@@ -262,15 +261,34 @@ function setupDashboardUI() {
   }
 
   if (subActive) {
-    profileBadge.textContent = currentUser.subscription_type;
+    let subLabel = '';
+    if (currentUser.subscription_type === 'lifetime') {
+      subLabel = 'Lifetime';
+    } else {
+      const msLeft = new Date(currentUser.expires_at) - new Date();
+      if (msLeft <= 0) {
+        subLabel = 'Expired';
+      } else {
+        const totalMinutes = Math.floor(msLeft / (1000 * 60));
+        const days = Math.floor(totalMinutes / (24 * 60));
+        const hours = Math.floor((totalMinutes % (24 * 60)) / 60);
+        const minutes = totalMinutes % 60;
+
+        if (days > 0) {
+          subLabel = `${days}d ${hours}h left`;
+        } else if (hours > 0) {
+          subLabel = `${hours}h ${minutes}m left`;
+        } else {
+          subLabel = `${minutes}m left`;
+        }
+      }
+    }
+    
+    profileBadge.textContent = subLabel;
     profileBadge.className = 'badge active';
-    profileStatusDetail.textContent = 'Active';
-    profileStatusDetail.style.color = 'var(--accent-green)';
   } else {
     profileBadge.textContent = 'No Subscription';
     profileBadge.className = 'badge';
-    profileStatusDetail.textContent = isExpired ? 'Expired' : 'Inactive';
-    profileStatusDetail.style.color = 'var(--text-muted)';
   }
 
   // Set registered date
