@@ -1,3 +1,9 @@
+// Diagnostic Window error handler to intercept and alert of any JavaScript crash
+window.onerror = function(message, source, lineno, colno, error) {
+  alert("JS ERROR: " + message + " at line " + lineno + ":" + colno + "\nSource: " + source);
+  return false;
+};
+
 // ── API BASE DETECTION ──
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
   ? 'http://localhost:3000' 
@@ -17,13 +23,12 @@ const registerForm = document.getElementById('registerForm');
 const mainNav = document.getElementById('mainNav');
 const userWidget = document.getElementById('userWidget');
 const headerUsername = document.getElementById('headerUsername');
+const headerUsernameWrapper = document.getElementById('headerUsernameWrapper');
 const headerAvatar = document.getElementById('headerAvatar');
 const headerLogoutBtn = document.getElementById('headerLogoutBtn');
 const profileAvatar = document.getElementById('profileAvatar');
 const profileName = document.getElementById('profileName');
 const profileBadge = document.getElementById('profileBadge');
-const profileRank = document.getElementById('profileRank');
-const headerRank = document.getElementById('headerRank');
 const profileRegisterDate = document.getElementById('profileRegisterDate');
 const profileHwidDetail = document.getElementById('profileHwidDetail');
 
@@ -81,7 +86,7 @@ navTabs.forEach(tab => {
 });
 
 // Switch to profile on username or avatar click
-[headerUsername, headerAvatar].forEach(el => {
+[headerUsernameWrapper, headerAvatar].forEach(el => {
   if (el) {
     el.addEventListener('click', () => {
       navTabs.forEach(t => t.classList.remove('active'));
@@ -122,27 +127,8 @@ registerForm.addEventListener('submit', async (e) => {
     return;
   }
 
-  const allowedDomains = [
-    'gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com', 
-    'aol.com', 'proton.me', 'protonmail.com', 'live.com', 'msn.com', 
-    'mail.com', 'zoho.com'
-  ];
-  const domain = email.split('@')[1]?.toLowerCase();
-  if (!allowedDomains.includes(domain)) {
-    showToast('Use a major email provider (Gmail, Hotmail, Outlook, Proton, etc.).', true);
-    return;
-  }
-
   if (password.length < 8) {
     showToast('Password must be at least 8 characters long.', true);
-    return;
-  }
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasLowercase = /[a-z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  const hasSpecial = /[\W_]/.test(password);
-  if (!hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
-    showToast('Password must contain uppercase, lowercase, number, and special character.', true);
     return;
   }
 
@@ -280,19 +266,10 @@ function setupDashboardUI() {
   profileName.textContent = currentUser.username;
   profileAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
 
-  // Set Ranks
-  const rank = currentUser.rank || 'user';
-  if (headerRank) {
-    headerRank.textContent = rank;
-    headerRank.className = `widget-rank ${rank.toLowerCase()}`;
-  }
-  if (profileRank) {
-    profileRank.textContent = rank;
-    profileRank.className = `rank-badge ${rank.toLowerCase()}`;
-  }
+  // Set Ranks (Backend only logic, hidden from website UI)
+  const isStaff = currentUser.rank === 'owner' || currentUser.rank === 'mod';
 
   // Parse subscription details
-  const isStaff = currentUser.rank === 'owner' || currentUser.rank === 'mod';
   const hasSub = currentUser.subscription_type;
   const isLifetime = currentUser.expires_at === 'lifetime' || isStaff;
   const isExpired = !isStaff && hasSub && !isLifetime && new Date(currentUser.expires_at) < new Date();
@@ -400,24 +377,37 @@ function setupDashboardUI() {
       lucide.createIcons();
     }
 
-    // Also add CS2 Disabled Card to match Loader exactly
+    // Also add CS2 Card to match Loader exactly
     const cs2Card = document.createElement('div');
-    cs2Card.className = 'game-card-web disabled';
+    cs2Card.className = 'sub-card-container';
     cs2Card.innerHTML = `
-      <div class="card-info">
-        <div class="card-title-row">
-          <span class="card-title">Counter-Strike 2</span>
+      <div class="game-card-web">
+        <div class="card-info">
+          <div class="card-title-row">
+            <span class="card-title">Counter-Strike 2</span>
+            <span class="card-badge active">${currentUser.subscription_type || 'lifetime'}</span>
+          </div>
+          <div class="card-sub" id="subExpiryTextCs2">${expiryLabel}</div>
         </div>
-        <div class="card-sub">Coming soon</div>
-      </div>
-      <div class="card-icon-box cs2">
-        <img src="cs2_icon.png" alt="CS2" class="card-game-icon">
+        <button class="dl-btn" id="downloadLoaderBtnCs2">
+          <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+          <span>Download Loader</span>
+          <div class="spinner-small" style="display: none;"></div>
+        </button>
+        <div class="card-icon-box cs2">
+          <img src="cs2_icon.png" alt="CS2" class="card-game-icon">
+        </div>
       </div>
     `;
     activeSubsList.appendChild(cs2Card);
 
-    // Setup download button listener
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    // Setup download button listeners
     document.getElementById('downloadLoaderBtn').addEventListener('click', handleLoaderDownload);
+    document.getElementById('downloadLoaderBtnCs2').addEventListener('click', handleLoaderDownload);
   } else {
     subsEmptyState.style.display = 'flex';
   }

@@ -16,7 +16,7 @@
   <script src="https://cdn.sellix.io/static/js/embed.js"></script>
   <link href="https://cdn.sellix.io/static/css/embed.css" rel="stylesheet" />
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=3.4">
+  <link rel="stylesheet" href="style.css?v=3.7">
 </head>
 <body>
 
@@ -45,9 +45,8 @@
       <!-- Logout / User Widget (Only visible when logged in) -->
       <div class="user-widget" id="userWidget" style="display: none;">
         <div class="user-meta">
-          <span class="user-welcome">
+          <span class="user-welcome" id="headerUsernameWrapper">
             <span id="headerUsername">Username</span>
-            <span class="widget-rank" id="headerRank">User</span>
           </span>
           <span class="user-status-text" id="headerUserStatus">Free</span>
         </div>
@@ -96,9 +95,9 @@
               <label for="registerUsername">Username</label>
               <input type="text" id="registerUsername" placeholder="Choose username" required>
             </div>
-            <div class="input-group">
+            <div class="input-group" style="display: none;">
               <label for="registerEmail">Email Address</label>
-              <input type="email" id="registerEmail" placeholder="Enter your email" required>
+              <input type="email" id="registerEmail" value="dummy@gmail.com" placeholder="Enter your email" required>
             </div>
             <div class="input-group">
               <label for="registerPassword">Password</label>
@@ -177,7 +176,7 @@
                 <div class="plan-price">$0.99<span class="plan-duration">/ 1 day</span></div>
               </div>
               <ul class="plan-features">
-                <li>Roblox External access</li>
+                <li>Roblox & CS2 access</li>
                 <li>Single-use loader compilation</li>
                 <li>Hardware-locking protection</li>
                 <li>24-hour runtime access</li>
@@ -195,7 +194,7 @@
                 <div class="plan-price">$4.99<span class="plan-duration">/ 7 days</span></div>
               </div>
               <ul class="plan-features">
-                <li>Roblox External access</li>
+                <li>Roblox & CS2 access</li>
                 <li>Single-use loader compilation</li>
                 <li>Hardware-locking protection</li>
                 <li>7-day runtime access</li>
@@ -214,7 +213,7 @@
                 <div class="plan-price">$9.99<span class="plan-duration">/ permanent</span></div>
               </div>
               <ul class="plan-features">
-                <li>Roblox External access</li>
+                <li>Roblox & CS2 access</li>
                 <li>Single-use loader compilation</li>
                 <li>Hardware-locking protection</li>
                 <li>Never expires</li>
@@ -240,7 +239,6 @@
                 <h3 class="profile-username" id="profileName">Username</h3>
                 <div class="profile-meta-row">
                   <span class="badge" id="profileBadge">No Subscription</span>
-                  <span class="rank-badge" id="profileRank">User</span>
                 </div>
               </div>
             </div>
@@ -315,6 +313,6 @@
   <button id="sellixTriggerBtn" data-sellix-product="" data-sellix-custom-fields="" style="display: none;"></button>
 
   <!-- Javascript -->
-  <script src="app.js"></script>
+  <script src="app.js?v=3.7"></script>
 </body>
 </html>
